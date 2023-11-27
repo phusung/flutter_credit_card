@@ -23,7 +23,7 @@ import 'utils/typedefs.dart';
 
 class CreditCardWidget extends StatefulWidget {
   /// A widget showcasing credit card UI.
-  const CreditCardWidget({
+  CreditCardWidget({
     required this.cardNumber,
     required this.expiryDate,
     required this.cardHolderName,
@@ -56,8 +56,13 @@ class CreditCardWidget extends StatefulWidget {
     this.obscureInitialCardNumber = false,
     this.enableFloatingCard = false,
     this.floatingConfig = const FloatingConfig(),
+    this.frontWidget,
+    this.backWidget,
     super.key,
   });
+
+  Widget? frontWidget;
+  Widget? backWidget;
 
   /// A string indicating number on the card.
   final String cardNumber;
@@ -469,113 +474,116 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     required String number,
     required TextStyle defaultTextStyle,
   }) {
-    return CardBackground(
-      glarePosition: glarePosition,
-      floatingController: widget.enableFloatingCard ? floatController : null,
-      backgroundImage: widget.backgroundImage,
-      backgroundNetworkImage: widget.backgroundNetworkImage,
-      backgroundGradientColor: backgroundGradientColor,
-      glassmorphismConfig: widget.glassmorphismConfig,
-      height: widget.height,
-      width: widget.width,
-      padding: widget.padding,
-      border: widget.frontCardBorder,
-      shadowConfig: floatingShadowConfig,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          if (widget.bankName.isNotNullAndNotEmpty)
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16, top: 16),
-                child: Text(
-                  widget.bankName!,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: defaultTextStyle,
-                ),
-              ),
-            ),
-          Expanded(
-            flex: widget.isChipVisible ? 1 : 0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                if (widget.isChipVisible)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 16),
-                    child: Image.asset(
-                      AssetPaths.chip,
-                      package: AppConstants.packageName,
-                      color: widget.chipColor,
-                      scale: 1,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 16),
-              child: Text(
-                widget.cardNumber.isEmpty ? AppConstants.sixteenX : number,
-                style: widget.textStyle ?? defaultTextStyle,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    widget.labelValidThru,
-                    style: widget.textStyle ??
-                        defaultTextStyle.copyWith(fontSize: 7),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    widget.expiryDate.isEmpty
-                        ? widget.labelExpiredDate
-                        : widget.expiryDate,
-                    style: widget.textStyle ?? defaultTextStyle,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Visibility(
-                  visible: widget.isHolderNameVisible,
-                  child: Expanded(
+    return widget.frontWidget ??
+        CardBackground(
+          glarePosition: glarePosition,
+          floatingController: widget.enableFloatingCard
+              ? floatController
+              : null,
+          backgroundImage: widget.backgroundImage,
+          backgroundNetworkImage: widget.backgroundNetworkImage,
+          backgroundGradientColor: backgroundGradientColor,
+          glassmorphismConfig: widget.glassmorphismConfig,
+          height: widget.height,
+          width: widget.width,
+          padding: widget.padding,
+          border: widget.frontCardBorder,
+          shadowConfig: floatingShadowConfig,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (widget.bankName.isNotNullAndNotEmpty)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16, top: 16),
                     child: Text(
-                      widget.cardHolderName.isEmpty
-                          ? widget.labelCardHolder
-                          : widget.cardHolderName,
+                      widget.bankName!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: widget.textStyle ?? defaultTextStyle,
+                      style: defaultTextStyle,
                     ),
                   ),
                 ),
-                _getCardTypeIcon(),
-              ],
-            ),
+              Expanded(
+                flex: widget.isChipVisible ? 1 : 0,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    if (widget.isChipVisible)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 16),
+                        child: Image.asset(
+                          AssetPaths.chip,
+                          package: AppConstants.packageName,
+                          color: widget.chipColor,
+                          scale: 1,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 16),
+                  child: Text(
+                    widget.cardNumber.isEmpty ? AppConstants.sixteenX : number,
+                    style: widget.textStyle ?? defaultTextStyle,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        widget.labelValidThru,
+                        style: widget.textStyle ??
+                            defaultTextStyle.copyWith(fontSize: 7),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        widget.expiryDate.isEmpty
+                            ? widget.labelExpiredDate
+                            : widget.expiryDate,
+                        style: widget.textStyle ?? defaultTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Visibility(
+                      visible: widget.isHolderNameVisible,
+                      child: Expanded(
+                        child: Text(
+                          widget.cardHolderName.isEmpty
+                              ? widget.labelCardHolder
+                              : widget.cardHolderName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: widget.textStyle ?? defaultTextStyle,
+                        ),
+                      ),
+                    ),
+                    _getCardTypeIcon(),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
   }
 
   ///
@@ -612,78 +620,82 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     required String cvv,
     required TextStyle defaultTextStyle,
   }) {
-    return CardBackground(
-      glarePosition: glarePosition,
-      floatingController: widget.enableFloatingCard ? floatController : null,
-      backgroundImage: widget.backgroundImage,
-      backgroundNetworkImage: widget.backgroundNetworkImage,
-      backgroundGradientColor: backgroundGradientColor,
-      glassmorphismConfig: widget.glassmorphismConfig,
-      height: widget.height,
-      width: widget.width,
-      padding: widget.padding,
-      border: widget.backCardBorder,
-      shadowConfig: floatingShadowConfig,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Container(
-              margin: const EdgeInsets.only(top: 16),
-              height: 48,
-              color: Colors.black,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              margin: const EdgeInsets.only(top: 16),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 9,
-                    child: Container(
-                      height: 48,
-                      color: Colors.white70,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Text(
-                          widget.cvvCode.isEmpty
-                              ? isAmex
-                                  ? AppConstants.fourX
-                                  : AppConstants.threeX
-                              : cvv,
-                          maxLines: 1,
-                          style: widget.textStyle ?? defaultTextStyle,
+    return widget.backWidget ??
+        CardBackground(
+          glarePosition: glarePosition,
+          floatingController: widget.enableFloatingCard
+              ? floatController
+              : null,
+          backgroundImage: widget.backgroundImage,
+          backgroundNetworkImage: widget.backgroundNetworkImage,
+          backgroundGradientColor: backgroundGradientColor,
+          glassmorphismConfig: widget.glassmorphismConfig,
+          height: widget.height,
+          width: widget.width,
+          padding: widget.padding,
+          border: widget.backCardBorder,
+          shadowConfig: floatingShadowConfig,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  height: 48,
+                  color: Colors.black,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 9,
+                        child: Container(
+                          height: 48,
+                          color: Colors.white70,
                         ),
                       ),
-                    ),
-                  )
-                ],
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Text(
+                              widget.cvvCode.isEmpty
+                                  ? isAmex
+                                  ? AppConstants.fourX
+                                  : AppConstants.threeX
+                                  : cvv,
+                              maxLines: 1,
+                              style: widget.textStyle ?? defaultTextStyle,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child: _getCardTypeIcon(),
+              Expanded(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16, right: 16, bottom: 16),
+                    child: _getCardTypeIcon(),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
   }
 
   Widget _cardGesture({required Widget child}) {
